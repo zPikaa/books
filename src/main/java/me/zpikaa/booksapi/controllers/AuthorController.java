@@ -6,9 +6,12 @@ import me.zpikaa.booksapi.mappers.Mapper;
 import me.zpikaa.booksapi.services.AuthorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class AuthorController {
@@ -26,6 +29,12 @@ public class AuthorController {
         AuthorEntity authorEntity = authorMapper.mapFrom(authorDTO);
         AuthorEntity saved = authorService.createAuthor(authorEntity);
         return new ResponseEntity<>(authorMapper.mapTo(saved), HttpStatus.CREATED);
+    }
+
+    @GetMapping(path = "/authors")
+    public List<AuthorDTO> listAuthors() {
+        List<AuthorEntity> authors = authorService.findAll();
+        return authors.stream().map(authorMapper::mapTo).toList();
     }
 
 }
