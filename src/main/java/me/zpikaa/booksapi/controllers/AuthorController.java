@@ -4,6 +4,8 @@ import me.zpikaa.booksapi.domain.dto.AuthorDTO;
 import me.zpikaa.booksapi.domain.entities.AuthorEntity;
 import me.zpikaa.booksapi.mappers.Mapper;
 import me.zpikaa.booksapi.services.AuthorService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,10 +22,10 @@ public class AuthorController {
     }
 
     @PostMapping(path = "/authors")
-    public AuthorDTO createAuthor(@RequestBody AuthorDTO authorDTO) {
+    public ResponseEntity<AuthorDTO> createAuthor(@RequestBody AuthorDTO authorDTO) {
         AuthorEntity authorEntity = authorMapper.mapFrom(authorDTO);
         AuthorEntity saved = authorService.createAuthor(authorEntity);
-        return authorMapper.mapTo(saved);
+        return new ResponseEntity<>(authorMapper.mapTo(saved), HttpStatus.CREATED);
     }
 
 }
