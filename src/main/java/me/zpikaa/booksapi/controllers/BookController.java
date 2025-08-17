@@ -6,10 +6,9 @@ import me.zpikaa.booksapi.mappers.Mapper;
 import me.zpikaa.booksapi.services.BookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class BookController {
@@ -27,6 +26,12 @@ public class BookController {
         BookEntity bookEntity = bookMapper.mapFrom(bookDTO);
         BookEntity saved = bookService.createBook(isbn, bookEntity);
         return new ResponseEntity<>(bookMapper.mapTo(saved), HttpStatus.CREATED);
+    }
+
+    @GetMapping(path = "/books")
+    public List<BookDTO> listBooks() {
+        List<BookEntity> books = bookService.findAll();
+        return books.stream().map(bookMapper::mapTo).toList();
     }
 
 }
