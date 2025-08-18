@@ -6,12 +6,10 @@ import me.zpikaa.booksapi.mappers.Mapper;
 import me.zpikaa.booksapi.services.AuthorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class AuthorController {
@@ -35,6 +33,16 @@ public class AuthorController {
     public List<AuthorDTO> listAuthors() {
         List<AuthorEntity> authors = authorService.findAll();
         return authors.stream().map(authorMapper::mapTo).toList();
+    }
+
+    @GetMapping(path = "/authors/{id}")
+    public ResponseEntity<AuthorDTO> getAuthor(@PathVariable("id") Long id) {
+        Optional<AuthorEntity> foundAuthor = authorService.findOne(id);
+
+        return foundAuthor.map(authorEntity -> {
+            AuthorDTO authorDTO = authorMapper.mapTo(authorEntity);
+            return new ResponseEntity<>(authorDTO, HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
 }
