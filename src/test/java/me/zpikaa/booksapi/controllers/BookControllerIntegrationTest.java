@@ -3,6 +3,7 @@ package me.zpikaa.booksapi.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.zpikaa.booksapi.TestDataUtil;
 import me.zpikaa.booksapi.domain.dto.BookDTO;
+import me.zpikaa.booksapi.domain.entities.AuthorEntity;
 import me.zpikaa.booksapi.domain.entities.BookEntity;
 import me.zpikaa.booksapi.services.BookService;
 import org.junit.jupiter.api.Test;
@@ -86,6 +87,29 @@ public class BookControllerIntegrationTest {
                 MockMvcResultMatchers.jsonPath("$[0].isbn").value(bookEntity.getIsbn())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$[0].title").value(bookEntity.getTitle())
+        );
+    }
+
+    @Test
+    public void testThatFindOneBookSuccessfullyReturnsHttpStatus200WhenBookExists() throws Exception {
+        BookEntity bookEntity = TestDataUtil.createTestBookEntityA(null);
+        bookService.createBook(bookEntity.getIsbn(), bookEntity);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/books/%s".formatted(bookEntity.getIsbn()))
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public void testThatFindOneBookSuccessfullyReturnsHttpStatus404WhenBookDoesntExists() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/books/not-existing-book-isbn")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
         );
     }
 
