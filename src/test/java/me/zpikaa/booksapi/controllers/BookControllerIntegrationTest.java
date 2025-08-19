@@ -23,9 +23,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureMockMvc
 public class BookControllerIntegrationTest {
 
-    private MockMvc mockMvc;
-    private BookService bookService;
-    private ObjectMapper objectMapper;
+    private final MockMvc mockMvc;
+    private final BookService bookService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public BookControllerIntegrationTest(MockMvc mockMvc, BookService bookService) {
@@ -188,6 +188,19 @@ public class BookControllerIntegrationTest {
                 MockMvcResultMatchers.jsonPath("$.isbn").value(bookEntity.getIsbn())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.title").value(bookDTO.getTitle())
+        );
+    }
+
+    @Test
+    public void testThatDeleteBookSuccessfullyReturnsHttpStatus204() throws Exception {
+        BookEntity bookEntity = TestDataUtil.createTestBookEntityA(null);
+        BookEntity savedEntity = bookService.save(bookEntity.getIsbn(), bookEntity);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/books/%s".formatted(savedEntity.getIsbn()))
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNoContent()
         );
     }
 
