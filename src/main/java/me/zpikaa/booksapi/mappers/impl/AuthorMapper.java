@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthorMapper implements Mapper<AuthorEntity, AuthorDTO> {
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     public AuthorMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
