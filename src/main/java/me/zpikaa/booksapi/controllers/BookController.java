@@ -14,8 +14,8 @@ import java.util.Optional;
 @RestController
 public class BookController {
 
-    private BookService bookService;
-    private Mapper<BookEntity, BookDTO> bookMapper;
+    private final BookService bookService;
+    private final Mapper<BookEntity, BookDTO> bookMapper;
 
     public BookController(BookService bookService, Mapper<BookEntity, BookDTO> bookMapper) {
         this.bookService = bookService;
@@ -23,10 +23,14 @@ public class BookController {
     }
 
     @PutMapping(path = "/books/{isbn}")
-    public ResponseEntity<BookDTO> createBook(@PathVariable String isbn, @RequestBody BookDTO bookDTO) {
+    public ResponseEntity<BookDTO> createUpdateBook(@PathVariable String isbn, @RequestBody BookDTO bookDTO) {
         BookEntity bookEntity = bookMapper.mapFrom(bookDTO);
-        BookEntity saved = bookService.createBook(isbn, bookEntity);
-        return new ResponseEntity<>(bookMapper.mapTo(saved), HttpStatus.CREATED);
+        boolean bookExists = bookService.exists(isbn);
+
+        BookEntity saved = bookService.save(isbn, bookEntity);
+        BookDTO savedUpdatedBookDto = bookMapper.mapTo(saved);
+
+        return new ResponseEntity<>(savedUpdatedBookDto, bookExists ? HttpStatus.OK : HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/books")
