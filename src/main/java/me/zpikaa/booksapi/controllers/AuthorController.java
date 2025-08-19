@@ -4,11 +4,12 @@ import me.zpikaa.booksapi.domain.dto.AuthorDTO;
 import me.zpikaa.booksapi.domain.entities.AuthorEntity;
 import me.zpikaa.booksapi.mappers.Mapper;
 import me.zpikaa.booksapi.services.AuthorService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,9 +31,9 @@ public class AuthorController {
     }
 
     @GetMapping(path = "/authors")
-    public List<AuthorDTO> listAuthors() {
-        List<AuthorEntity> authors = authorService.findAll();
-        return authors.stream().map(authorMapper::mapTo).toList();
+    public Page<AuthorDTO> listAuthors(Pageable pageable) {
+        Page<AuthorEntity> authors = authorService.findAll(pageable);
+        return authors.map(authorMapper::mapTo);
     }
 
     @GetMapping(path = "/authors/{id}")

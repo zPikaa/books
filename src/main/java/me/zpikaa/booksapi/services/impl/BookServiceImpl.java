@@ -3,6 +3,8 @@ package me.zpikaa.booksapi.services.impl;
 import me.zpikaa.booksapi.domain.entities.BookEntity;
 import me.zpikaa.booksapi.repositories.BookRepository;
 import me.zpikaa.booksapi.services.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +29,11 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<BookEntity> findAll() {
         return StreamSupport.stream(bookRepository.findAll().spliterator(), false).toList();
+    }
+
+    @Override
+    public Page<BookEntity> findAll(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
     @Override
