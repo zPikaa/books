@@ -2,6 +2,7 @@ package me.zpikaa.booksapi.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.zpikaa.booksapi.TestDataUtil;
+import me.zpikaa.booksapi.domain.dto.AuthorDTO;
 import me.zpikaa.booksapi.domain.entities.AuthorEntity;
 import me.zpikaa.booksapi.services.AuthorService;
 import org.junit.jupiter.api.Test;
@@ -131,6 +132,58 @@ public class AuthorControllerIntegrationTest {
                 MockMvcResultMatchers.jsonPath("$.name").value(authorEntity.getName())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.age").value(authorEntity.getAge())
+        );
+    }
+
+    @Test
+    public void testThatFullUpdateAuthorSuccessfullyReturnsHttpStatus404WhenAuthorDoesntExists() throws Exception {
+        AuthorEntity authorEntity = TestDataUtil.createTestAuthorA();
+        String authorJson = objectMapper.writeValueAsString(authorEntity);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/authors/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
+        );
+    }
+
+    @Test
+    public void testThatFullUpdateAuthorSuccessfullyReturnsHttpStatus200WhenAuthorExistsAndIsUpdated() throws Exception {
+        AuthorEntity authorEntity = TestDataUtil.createTestAuthorA();
+        String authorJson = objectMapper.writeValueAsString(authorEntity);
+        AuthorEntity saved = authorService.save(authorEntity);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/authors/%s".formatted(saved.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public void testThatFullUpdateSuccessfullyUpdatesExistingAuthor() throws Exception {
+        AuthorEntity authorEntity = TestDataUtil.createTestAuthorA();
+        AuthorEntity saved = authorService.save(authorEntity);
+
+        AuthorDTO authorDTO = TestDataUtil.createTestAuthorDtoA();
+        authorDTO.setId(saved.getId());
+
+        String authorDtoUpdateJson = objectMapper.writeValueAsString(authorDTO);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/authors/%s".formatted(saved.getId()))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorDtoUpdateJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.id").value(saved.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.name").value(authorDTO.getName())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.age").value(authorDTO.getAge())
         );
     }
 
