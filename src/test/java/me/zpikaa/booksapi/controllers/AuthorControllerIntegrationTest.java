@@ -80,7 +80,7 @@ public class AuthorControllerIntegrationTest {
     @Test
     public void testThatListAuthorsSuccessfullyReturnsListOfAuthors() throws Exception {
         AuthorEntity authorEntity = TestDataUtil.createTestAuthorA();
-        authorService.createAuthor(authorEntity);
+        authorService.save(authorEntity);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors")
@@ -97,7 +97,7 @@ public class AuthorControllerIntegrationTest {
     @Test
     public void testThatFindOneAuthorSuccessfullyReturnsHttpStatus200WhenAuthorExists() throws Exception {
         AuthorEntity authorEntity = TestDataUtil.createTestAuthorA();
-        authorService.createAuthor(authorEntity);
+        authorService.save(authorEntity);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors/%s".formatted(authorEntity.getId()))
@@ -120,7 +120,7 @@ public class AuthorControllerIntegrationTest {
     @Test
     public void testThatFindOneAuthorSuccessfullyReturnsRequestedAuthor() throws Exception {
         AuthorEntity authorEntity = TestDataUtil.createTestAuthorA();
-        authorService.createAuthor(authorEntity);
+        authorService.save(authorEntity);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors/%s".formatted(authorEntity.getId()))
