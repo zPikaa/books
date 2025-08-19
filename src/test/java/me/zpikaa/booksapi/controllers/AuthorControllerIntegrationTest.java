@@ -87,11 +87,11 @@ public class AuthorControllerIntegrationTest {
                 MockMvcRequestBuilders.get("/authors")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].id").isNumber()
+                MockMvcResultMatchers.jsonPath("$.content[0].id").isNumber()
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].name").value(authorEntity.getName())
+                MockMvcResultMatchers.jsonPath("$.content[0].name").value(authorEntity.getName())
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].age").value(authorEntity.getAge())
+                MockMvcResultMatchers.jsonPath("$.content[0].age").value(authorEntity.getAge())
         );
     }
 
