@@ -1,4 +1,4 @@
-# BooksAPI
+# BooksAPI [![CodeFactor](https://www.codefactor.io/repository/github/zpikaa/books/badge)](https://www.codefactor.io/repository/github/zpikaa/books)
 
 A basic REST API built with Spring Boot for managing authors and books.
 This API allows you to manage resources such as authors and books, supporting CRUD operations via RESTful endpoints. Pagination is available for listing all authors and books.
